@@ -119,30 +119,58 @@ impl ttf::OutlineBuilder for Builder {
     }
 }
 
+fn generate_fns_for_char(
+    font_face: &mut ttf::Face,
+    ch: char,
+    scale: f32,
+    offset: (f32, f32),
+) -> (Option<ttf::Rect>, Vec<String>) {
+    if let Some(a_character) = font_face.glyph_index(ch) {
+        // println!("{:?}", a_character);
+        // Check what kinds of information this has
+
+        // Useless debugging information
+        // println!("{:?}", font_face.glyph_svg_image(a_character));
+        // println!("{:?}", font_face.glyph_raster_image(a_character, 100));
+        let mut builder = Builder::new(scale, offset);
+        let rect = font_face.outline_glyph(a_character, &mut builder);
+        // println!("Commands are: {}", builder.cmds);
+        // println!("Function array is: {:?}", builder.function_list);
+
+        (rect, builder.function_list)
+    } else {
+        (None, vec![])
+    }
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let font_data = std::fs::read(FONT_PATH)?;
-    let font_face = ttf::Face::parse(&font_data, 0)?;
+    let mut font_face = ttf::Face::parse(&font_data, 0)?;
 
-    if let Some(a_character) = font_face.glyph_index('G') {
-        println!("{:?}", a_character);
-        // Check what kinds of information this has
-        println!("{:?}", font_face.glyph_svg_image(a_character));
-        println!("{:?}", font_face.glyph_raster_image(a_character, 100));
-        let mut builder = Builder::new(0.1, (100.0, 50.0));
-        println!("{:?}", font_face.outline_glyph(a_character, &mut builder));
-        println!("Commands are: {}", builder.cmds);
-        println!("Function array is: {:?}", builder.function_list);
+    let sentence = "The quick brown fox jumped over the lazy dog";
+    let mut current_offset = (0., 0.);
 
-        let code = std::fs::read_to_string("../desmos_api/graph_writer.py")?;
-        Python::with_gil(|py| {
-            let graph_writer =
-                PyModule::from_code(py, &code, "graph_writer.py", "graph_writer").unwrap();
-            // let function_list = builder.function_list.into_py_list(py).unwrap(); graph_writer.graph_fn(builder.function_list);
-            let fns_py = PyList::new(py, builder.function_list);
-            let args = (fns_py,);
-            let graph_fn = graph_writer.getattr("graph_fn").unwrap();
-            graph_fn.call(args, None).expect("Graph generation failed");
-        })
+    let mut all_fns = vec![];
+    let scale = 0.01;
+    for ch in sentence.chars() {
+        let (rect, mut fns) = generate_fns_for_char(&mut font_face, ch, scale, current_offset);
+        if let Some(rect) = rect {
+            current_offset.0 += (rect.x_max as f32) * scale;
+        }
+        all_fns.append(&mut fns);
     }
+
+    let code = std::fs::read_to_string("../desmos_api/graph_writer.py")?;
+    Python::with_gil(|py| {
+        let graph_writer =
+            PyModule::from_code(py, &code, "graph_writer.py", "graph_writer").unwrap();
+        // let function_list = builder.function_list.into_py_list(py).unwrap(); graph_writer.graph_fn(builder.function_list);
+        let fns_py = PyList::new(py, all_fns);
+        let args = (fns_py,);
+        let graph_fn = graph_writer.getattr("graph_fn").unwrap();
+        graph_fn.call(args, None).expect("Graph generation failed");
+    });
+    println!("Wrote graph to file");
+
     Ok(())
 }
