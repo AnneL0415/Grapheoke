@@ -126,18 +126,36 @@ fn generate_fns_for_char(
     offset: (f32, f32),
 ) -> (Option<ttf::Rect>, Vec<String>) {
     if let Some(a_character) = font_face.glyph_index(ch) {
-        // println!("{:?}", a_character);
-        // Check what kinds of information this has
+        // This does nothing so we have to use the hmtx table to find the advance width
+        // (not directly though, thankfully)
+        if ch == ' ' {
+            if let Some(advance) = font_face.glyph_hor_advance(a_character) {
+                (
+                    Some(ttf::Rect {
+                        x_min: 0,
+                        y_min: 0,
+                        x_max: advance as i16,
+                        y_max: 0,
+                    }),
+                    vec![],
+                )
+            } else {
+                panic!("Space does not have an advance size");
+            }
+        } else {
+            // println!("{:?}", a_character);
+            // Check what kinds of information this has
 
-        // Useless debugging information
-        // println!("{:?}", font_face.glyph_svg_image(a_character));
-        // println!("{:?}", font_face.glyph_raster_image(a_character, 100));
-        let mut builder = Builder::new(scale, offset);
-        let rect = font_face.outline_glyph(a_character, &mut builder);
-        // println!("Commands are: {}", builder.cmds);
-        // println!("Function array is: {:?}", builder.function_list);
+            // Useless debugging information
+            // println!("{:?}", font_face.glyph_svg_image(a_character));
+            // println!("{:?}", font_face.glyph_raster_image(a_character, 100));
+            let mut builder = Builder::new(scale, offset);
+            let rect = font_face.outline_glyph(a_character, &mut builder);
+            // println!("Commands are: {}", builder.cmds);
+            // println!("Function array is: {:?}", builder.function_list);
 
-        (rect, builder.function_list)
+            (rect, builder.function_list)
+        }
     } else {
         (None, vec![])
     }
