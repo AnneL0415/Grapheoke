@@ -1,0 +1,10 @@
+<script src="calculator.js"></script>
+<div id="calculator" style="width: auto; height: auto;"></div>
+<script>
+	var elt = document.getElementById('calculator');
+	var calculator = Desmos.GraphingCalculator(elt);
+	calculator.setExpression({ id: 'line1', latex: 'x+1', color: '#000000' });
+	calculator.setExpression({ id: 'line2', latex: '2x', color: '#000000' });
+	calculator.setExpression({ id: 'line3', latex: 'x^2', color: '#000000' });
+	calculator.openKeypad();
+</script>
