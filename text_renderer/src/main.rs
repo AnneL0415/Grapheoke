@@ -30,6 +30,9 @@ impl Builder {
 
 impl ttf::OutlineBuilder for Builder {
     fn move_to(&mut self, x: f32, y: f32) {
+        let x = x * self.scale;
+        let y = y * self.scale;
+
         println!("Move to {} {}", x, y);
         write!(&mut self.cmds, "M {} {}", x, y).unwrap();
 
@@ -37,6 +40,9 @@ impl ttf::OutlineBuilder for Builder {
     }
 
     fn line_to(&mut self, x: f32, y: f32) {
+        let x = x * self.scale;
+        let y = y * self.scale;
+
         println!("Line to {} {}", x, y);
         write!(&mut self.cmds, "L {} {}", x, y).unwrap();
 
@@ -56,6 +62,12 @@ impl ttf::OutlineBuilder for Builder {
     }
 
     fn quad_to(&mut self, x1: f32, y1: f32, x: f32, y: f32) {
+        let x = x * self.scale;
+        let y = y * self.scale;
+
+        let x1 = x1 * self.scale;
+        let y1 = y1 * self.scale;
+
         println!("Quad to {} {} {} {}", x1, y1, x, y);
         write!(&mut self.cmds, "Q {} {} {} {}", x1, y1, x, y).unwrap();
 
@@ -83,6 +95,15 @@ impl ttf::OutlineBuilder for Builder {
     }
 
     fn curve_to(&mut self, x1: f32, y1: f32, x2: f32, y2: f32, x: f32, y: f32) {
+        let x1 = x1 * self.scale;
+        let y1 = y1 * self.scale;
+
+        let x2 = x2 * self.scale;
+        let y2 = y2 * self.scale;
+
+        let x = x * self.scale;
+        let y = y * self.scale;
+
         println!("Curve to {} {} {} {} {} {}", x1, y1, x2, y2, x, y);
         write!(&mut self.cmds, "C {} {} {} {} {} {}", x1, y1, x2, y2, x, y).unwrap();
 
@@ -102,7 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let font_data = std::fs::read(FONT_PATH)?;
     let font_face = ttf::Face::parse(&font_data, 0)?;
 
-    if let Some(a_character) = font_face.glyph_index('F') {
+    if let Some(a_character) = font_face.glyph_index('G') {
         println!("{:?}", a_character);
         // Check what kinds of information this has
         println!("{:?}", font_face.glyph_svg_image(a_character));
