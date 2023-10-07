@@ -102,12 +102,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let font_data = std::fs::read(FONT_PATH)?;
     let font_face = ttf::Face::parse(&font_data, 0)?;
 
-    if let Some(a_character) = font_face.glyph_index('G') {
+    if let Some(a_character) = font_face.glyph_index('F') {
         println!("{:?}", a_character);
         // Check what kinds of information this has
         println!("{:?}", font_face.glyph_svg_image(a_character));
         println!("{:?}", font_face.glyph_raster_image(a_character, 100));
-        let mut builder = Builder::new(0., (100.0, 50.0));
+        let mut builder = Builder::new(0.1, (100.0, 50.0));
         println!("{:?}", font_face.outline_glyph(a_character, &mut builder));
         println!("Commands are: {}", builder.cmds);
         println!("Function array is: {:?}", builder.function_list);
