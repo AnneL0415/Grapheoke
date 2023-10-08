@@ -13,7 +13,9 @@ mod renderer;
 use lrc_parser::lrc_to_timings;
 use renderer::generate_sentence_fns;
 
-const FONT_PATH: &'static str = "comic-sans-ms/COMIC.TTF";
+// const FONT_PATH: &'static str = "comic-sans-ms/COMIC.TTF";
+const FONT_PATH: &'static str = "/usr/share/fonts/liberation/LiberationSerif-Regular.ttf";
+
 // const FONT_PATH: &'static str = "/usr/share/fonts/adobe-source-han-sans/SourceHanSansCN-Regular.otf";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -26,9 +28,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(lrc_file) = std::env::args().nth(1) {
         let midi_file = std::env::args().nth(2).expect("Missing MIDI track");
         let track: u32 = std::env::args().nth(3).expect("Missing track").parse()?;
+        let octave_shift: u32 = std::env::args().nth(4).expect("Missing octave shift").parse()?;
+        let offset: i64 = std::env::args().nth(5).expect("Missing offset").parse()?;
+        let scale_factor: f32 = std::env::args().nth(6).expect("Missing scale_factor").parse()?;
 
         let lrc_path = PathBuf::from(lrc_file);
-        let fns = lrc_to_timings(&mut font_face, 0.0004, (-9., 0.), -1000, 0.77, lrc_path)?;
+        let fns = lrc_to_timings(&mut font_face, 0.0004, (-9., 0.), offset, scale_factor, lrc_path)?;
         // println!("{:?}", fns[0].0);
 
         let code = std::fs::read_to_string("../desmos_api/graph_writer.py")?;
@@ -38,7 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let graph_writer =
                 PyModule::from_code(py, &code, "graph_writer.py", "graph_writer").unwrap();
             let song_gen = PyModule::from_code(py, &song_code, "song_gen.py", "song_gen").unwrap();
-            let song_args = (midi_file, track, 500, 0);
+            let song_args = (midi_file, track, 500, octave_shift);
 
             let generate_piecewise_song = song_gen.getattr("generate_piecewise_song").unwrap();
             let song_fn = generate_piecewise_song
