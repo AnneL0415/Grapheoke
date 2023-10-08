@@ -71,10 +71,10 @@ def generate_piecewise_song(midi_file, track=1, note_count=500, octave_shift=22)
 	notes = [((a-s_t)/time, (b-s_t)/time, mid_to_des(n + tp)) for a, b, n in notes]
 
 	formula = "y=\\left\\{" + ",".join([f"{a:.2f}\\le x\\le{b:.2f}:{n:.2f}" for a, b, n in notes]) + ", 0 \\le \\ x \\ 1000: 0 \\right\\}"
-
+	print(formula)
 	return formula
 
-# if __name__ == "__main__":
-# 	from sys import argv, stderr
-# 	from mido import MidiFile
-# 	generate_piecewise_song(argv[1],int(argv[2]),int(argv[3]),int(argv[4]))
+if __name__ == "__main__":
+	from sys import argv, stderr
+	from mido import MidiFile
+	generate_piecewise_song(argv[1],int(argv[2]),int(argv[3]),int(argv[4]))
