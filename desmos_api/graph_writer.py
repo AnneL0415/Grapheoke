@@ -3,6 +3,7 @@ def graph_fn(arr, song_fn):
     output_file = open("graph.html", "w")
 
     #source
+    output_file.write("<button onclick='startKaraoke()'>start</button>")
     output_file.write("<script src=\"calculator.js\"></script>\n")
 
     # setup lyric graph
@@ -14,6 +15,10 @@ def graph_fn(arr, song_fn):
     # clear graph function
     output_file.write("\tfunction clear_graph() {\n")
     output_file.write("\t\tlyric_calculator.controller.externalSetState(lyric_calculator.controller.getBlankState());\n\t}\n\n")
+    output_file.write("\tfunction startKaraoke() {\n")
+    # output_file.write("")
+    # output_file.write("\tvar a = music_calculator.controller.getAudioGraph(); a.enterAudioTrace(); a.hearGraph(); \n")
+    output_file.write("\tconsole.log(music_calculator.controller.dispatch({type: \"keypad/audio-trace\", command: \"hear-graph\"}));\n")
 
     # tab repeater
     def tab_repeater(num):
@@ -54,7 +59,7 @@ def graph_fn(arr, song_fn):
             output_file.write("\n")
     
     # end lyric graph
-    output_file.write("</script>\n\n")
+    output_file.write("\t}\n</script>\n\n")
 
     # set basic parameters
     output_file.write("<script src=\"calculator.js\"></script>\n")
@@ -69,7 +74,11 @@ def graph_fn(arr, song_fn):
     output_file.write("\tmusic_calculator.setExpression({ id: 'line1', latex: ")
     output_file.write(repr(song_fn))
     output_file.write(", color: '#000000' });\n")
-    output_file.write("\tmusic_calculator.controller.setAudioTraceSpeed(1)\n")
+    # output_file.write("\tmusic_calculator.controller.focusFirstExpression();\n")
+    output_file.write("\tmusic_calculator.controller.dispatch({type: \"keypad/audio-trace\", command: \"on\"});\n")
+    output_file.write("\tmusic_calculator.controller.setAudioTraceSpeed(1);\n")
+    # output_file.write("\tsetTimeout(function(){console.log('audio trace'); var a = music_calculator.controller.getAudioGraph(); a.setFocusedCell(1); a.enterAudioTrace(); a.hearGraph(); a.exitAudioTrace();}, 2000)\n")
+
 
     # end file
     output_file.write("</script>")
