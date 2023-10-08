@@ -56,10 +56,6 @@ def graph_fn(arr):
     # end lyric graph
     output_file.write("</script>\n\n")
 
-def music_fn(arr):
-    # create file
-    output_file = open("graph.html", "w")
-
     # set basic parameters
     output_file.write("<script src=\"calculator.js\"></script>\n")
     output_file.write("<div id=\"calculator\" style=\"width: auto; height: auto;\"></div>\n")
