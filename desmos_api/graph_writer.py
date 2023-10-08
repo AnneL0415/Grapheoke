@@ -65,7 +65,3 @@ def graph_fn(arr):
 
     # end music graph
     output_file.write("</script>")
-
-# tests
-# arr = [(5.32, ["x^2", "x^3", "x^4", "x^5"]), (5.32, ["2", "3", "4", "5"]), (5.32, ["0.5x", "x", "1.5x", "2x"])]
-# graph_fn(arr)
