@@ -51,12 +51,12 @@ def graph_fn(arr, song_fn):
     # close all functions 
     while i >= 2:
         tab_repeater(i-1)
-        output_file.write("}, " + str(arr[i-2][0]) + ")")
+        output_file.write("}, ")
         i-=1
         if i == 1:
-            output_file.write(";\n")
+            output_file.write("0);\n")
         else:
-            output_file.write("\n")
+            output_file.write(str(arr[i-2][0]) + ")\n")
     
     # end lyric graph
     output_file.write("\t}\n</script>\n\n")
@@ -82,3 +82,6 @@ def graph_fn(arr, song_fn):
 
     # end file
     output_file.write("</script>")
+
+arr = [[1000, ["x^2", "x^3", "x^4"]], [2000, ["x^2", "x^3", "x^4"]], [3000, ["x^2", "x^3", "x^4"]]]
+graph_fn(arr, None)
