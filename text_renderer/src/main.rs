@@ -13,7 +13,8 @@ mod renderer;
 use lrc_parser::lrc_to_timings;
 use renderer::generate_sentence_fns;
 
-const FONT_PATH: &'static str = "Open_Sans/static/OpenSans-Regular.ttf";
+const FONT_PATH: &'static str = "comic-sans-ms/COMIC.TTF";
+// const FONT_PATH: &'static str = "/usr/share/fonts/adobe-source-han-sans/SourceHanSansCN-Regular.otf";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let font_data = std::fs::read(FONT_PATH)?;
@@ -27,8 +28,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let track: u32 = std::env::args().nth(3).expect("Missing track").parse()?;
 
         let lrc_path = PathBuf::from(lrc_file);
-        let fns = lrc_to_timings(&mut font_face, 0.0004, (-9., 0.), lrc_path)?;
-        // println!("{:?}", fns);
+        let fns = lrc_to_timings(&mut font_face, 0.0004, (-9., 0.), -1000, 0.77, lrc_path)?;
+        // println!("{:?}", fns[0].0);
 
         let code = std::fs::read_to_string("../desmos_api/graph_writer.py")?;
         let song_code = std::fs::read_to_string("../desmos_api/song_gen.py")?;
@@ -37,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let graph_writer =
                 PyModule::from_code(py, &code, "graph_writer.py", "graph_writer").unwrap();
             let song_gen = PyModule::from_code(py, &song_code, "song_gen.py", "song_gen").unwrap();
-            let song_args = (midi_file, track, 500, 22);
+            let song_args = (midi_file, track, 500, 0);
 
             let generate_piecewise_song = song_gen.getattr("generate_piecewise_song").unwrap();
             let song_fn = generate_piecewise_song

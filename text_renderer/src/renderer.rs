@@ -101,7 +101,7 @@ impl ttf::OutlineBuilder for DesmosPolynomialBuilder {
         write!(&mut self.cmds, "C {} {} {} {} {} {}", x1, y1, x2, y2, x, y).unwrap();
 
         // Push to function list
-        todo!();
+        // todo!();
 
         self.current_point = (x, y);
     }
