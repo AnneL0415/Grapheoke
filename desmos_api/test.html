@@ -1,9 +1,32 @@
 <script src="calculator.js"></script>
 <div id="calculator" style="width: 1920px; height: 1080px;"></div>
 <script>
-    var elt = document.getElementById('calculator');
-    var calculator = Desmos.GraphingCalculator(elt);
-    calculator.setExpression({ id: 'line1', latex: 'y=x', color: '#000000' });
-    calculator.openKeypad();
-    //hello! :D
+    var lyric_elt = document.getElementById('calculator');
+	var lyric_calculator = Desmos.GraphingCalculator(lyric_elt);
+
+	function clear_graph() {
+		lyric_calculator.controller.externalSetState(lyric_calculator.controller.getBlankState());
+	}
+
+	setTimeOut(function() {
+		clear_graph()
+		lyric_calculator.setExpression({ id: 'line1', latex: 'x^2', color: '#000000' });
+		lyric_calculator.setExpression({ id: 'line2', latex: 'x^3', color: '#000000' });
+		lyric_calculator.setExpression({ id: 'line3', latex: 'x^4', color: '#000000' });
+		lyric_calculator.setExpression({ id: 'line4', latex: 'x^5', color: '#000000' });
+		setTimeOut(function() {
+			clear_graph()
+			lyric_calculator.setExpression({ id: 'line5', latex: '2', color: '#000000' });
+			lyric_calculator.setExpression({ id: 'line6', latex: '3', color: '#000000' });
+			lyric_calculator.setExpression({ id: 'line7', latex: '4', color: '#000000' });
+			lyric_calculator.setExpression({ id: 'line8', latex: '5', color: '#000000' });
+			setTimeOut(function() {
+				clear_graph()
+				lyric_calculator.setExpression({ id: 'line9', latex: '0.5x', color: '#000000' });
+				lyric_calculator.setExpression({ id: 'line10', latex: 'x', color: '#000000' });
+				lyric_calculator.setExpression({ id: 'line11', latex: '1.5x', color: '#000000' });
+				lyric_calculator.setExpression({ id: 'line12', latex: '2x', color: '#000000' });
+			}, 5.32)
+		}, 5.32)
+	}, 5.32);
 </script>
