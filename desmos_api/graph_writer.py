@@ -70,11 +70,10 @@ def music_fn(arr):
     # write and format each function
     i = 1
     for fn in arr:
-        output_file.write("\tcalculator.setExpression({ id: 'line" + str(i) + "', latex: ")
+        output_file.write("\tmusic_calculator.setExpression({ id: 'line" + str(i) + "', latex: ")
         output_file.write(repr(fn))
         output_file.write(", color: '#000000' });\n")
         i+=1
     
     # end file
-    output_file.write("\tcalculator.openKeypad();\n")
     output_file.write("</script>")
