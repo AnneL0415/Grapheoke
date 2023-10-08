@@ -61,7 +61,7 @@ def generate_piecewise_song(midi_file, track=1, note_count=500, octave_shift=22)
 						notes.append((start, time, note))
 	s_t = notes[0][0]
 	time = notes[-1][1]
-	#time -= s_t
+	time -= s_t
 	time /= framing
 	#time = 1
 
