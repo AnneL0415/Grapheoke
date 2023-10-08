@@ -23,23 +23,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let fns = generate_sentence_fns(&mut font_face, sentence, 0.01, (0., 0.));
     let fns: Vec<String> = vec![];
     if let Some(lrc_file) = std::env::args().nth(1) {
+        let midi_file = std::env::args().nth(2).expect("Missing MIDI track");
+        let track: u32 = std::env::args().nth(3).expect("Missing track").parse()?;
+
         let lrc_path = PathBuf::from(lrc_file);
-        let fns = lrc_to_timings(&mut font_face, 0.001, (0., 0.), lrc_path)?;
-        println!("{:?}", fns);
+        let fns = lrc_to_timings(&mut font_face, 0.0004, (-9., 0.), lrc_path)?;
+        // println!("{:?}", fns);
 
         let code = std::fs::read_to_string("../desmos_api/graph_writer.py")?;
+        let song_code = std::fs::read_to_string("../desmos_api/song_gen.py")?;
+
         Python::with_gil(|py| {
             let graph_writer =
                 PyModule::from_code(py, &code, "graph_writer.py", "graph_writer").unwrap();
+            let song_gen = PyModule::from_code(py, &song_code, "song_gen.py", "song_gen").unwrap();
+            let song_args = (midi_file, track, 500, 22);
+
+            let generate_piecewise_song = song_gen.getattr("generate_piecewise_song").unwrap();
+            let song_fn = generate_piecewise_song
+                .call(song_args, None)
+                .expect("Failed to convert song to fn");
+
             // let function_list = builder.function_list.into_py_list(py).unwrap(); graph_writer.graph_fn(builder.function_list);
             let fns_py = PyList::new(py, fns);
-            let args = (fns_py,);
+            let args = (fns_py, song_fn);
             let graph_fn = graph_writer.getattr("graph_fn").unwrap();
             graph_fn.call(args, None).expect("Graph generation failed");
         });
         println!("Wrote graph to file");
     } else {
-        println!("Usage: ./text_renderer [lrc-file]")
+        println!("Usage: ./text_renderer [lrc-file] ")
     }
 
     Ok(())

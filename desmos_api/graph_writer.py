@@ -1,4 +1,4 @@
-def graph_fn(arr):
+def graph_fn(arr, song_fn):
     # create file
     output_file = open("graph.html", "w")
 
@@ -61,15 +61,15 @@ def graph_fn(arr):
     output_file.write("<div id=\"calculator\" style=\"width: auto; height: auto;\"></div>\n")
     output_file.write("<script>\n")
     output_file.write("\tvar elt = document.getElementById('calculator');\n")
-    output_file.write("\tvar calculator = Desmos.GraphingCalculator(elt);\n")
+    output_file.write("\tvar music_calculator = Desmos.GraphingCalculator(elt);\n")
 
     # write and format each function
-    i = 1
-    for fn in arr:
-        output_file.write("\tmusic_calculator.setExpression({ id: 'line" + str(i) + "', latex: ")
-        output_file.write(repr(fn))
-        output_file.write(", color: '#000000' });\n")
-        i+=1
-    
+    output_file.write("\tmusic_calculator.controller.dispatch({type: \"set-axis-scale\", settings: {axis: \"y\", scale: \"linear\", limitLatex: {min: \"" + str(0) + "\",max: \"" + str(1000) + "\"}}});\n")
+    output_file.write("\tmusic_calculator.controller.dispatch({type: \"set-axis-scale\", settings: {axis: \"x\", scale: \"linear\", limitLatex: {min: \"" + str(0) + "\",max: \"" + str(1000) + "\"}}});")
+    output_file.write("\tmusic_calculator.setExpression({ id: 'line1', latex: ")
+    output_file.write(repr(song_fn))
+    output_file.write(", color: '#000000' });\n")
+    output_file.write("\tmusic_calculator.controller.setAudioTraceSpeed(1)\n")
+
     # end file
     output_file.write("</script>")
