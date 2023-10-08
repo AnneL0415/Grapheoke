@@ -83,5 +83,6 @@ def graph_fn(arr, song_fn):
     # end file
     output_file.write("</script>")
 
-arr = [[1000, ["x^2", "x^3", "x^4"]], [2000, ["x^2", "x^3", "x^4"]], [3000, ["x^2", "x^3", "x^4"]]]
-graph_fn(arr, None)
+# tests
+# arr = [[1000, ["x^2", "x^3", "x^4"]], [2000, ["x^2", "x^3", "x^4"]], [3000, ["x^2", "x^3", "x^4"]]]
+# graph_fn(arr, None)
