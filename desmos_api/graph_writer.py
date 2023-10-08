@@ -27,16 +27,17 @@ def graph_fn(arr):
     k = 1
     for element in arr:
         tab_repeater(i)
-        output_file.write("setTimeOut(function() {\n")
+        output_file.write("setTimeout(function() {\n")
 
         tab_repeater(j)
         output_file.write("clear_graph()\n")
 
         for function in element[1]:
+            # print(repr(function))
             tab_repeater(j)
-            output_file.write("lyric_calculator.setExpression({ id: 'line" + str(k) + "', latex: '")
-            output_file.write(function)
-            output_file.write("', color: '#000000' });\n")
+            output_file.write("lyric_calculator.setExpression({ id: 'line" + str(k) + "', latex: ")
+            output_file.write(repr(function))
+            output_file.write(", color: '#000000' });\n")
             k+=1
         
         j+=1
